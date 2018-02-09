@@ -5,10 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="axun.com.viewpagerbanner.MainActivity">
-
-   <axun.com.banner.Banner
-       android:id="@+id/banner_view"
+   <ScrollView
        android:layout_width="match_parent"
-       android:layout_height="200dp"
-       ></axun.com.banner.Banner>
+       android:layout_height="match_parent"
+       android:fillViewport="true">
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
+         <axun.com.banner.Banner
+             android:id="@+id/banner_view"
+             android:layout_width="match_parent"
+             android:layout_height="200dp"
+             ></axun.com.banner.Banner>
+         <axun.com.banner.Banner
+             android:layout_marginTop="5dp"
+             android:id="@+id/banner_view2"
+             android:layout_width="match_parent"
+             android:layout_height="200dp"></axun.com.banner.Banner>
+         <axun.com.banner.Banner
+             android:layout_marginTop="5dp"
+             android:id="@+id/banner_view3"
+             android:layout_width="match_parent"
+             android:layout_height="200dp"></axun.com.banner.Banner>
+      </LinearLayout>
+   </ScrollView>
 </RelativeLayout>
