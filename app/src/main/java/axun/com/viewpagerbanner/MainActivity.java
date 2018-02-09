@@ -2,12 +2,12 @@ package axun.com.viewpagerbanner;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import axun.com.banner.Banner;
+import axun.com.banner.BannerConfig;
 import axun.com.banner.BannerStyle;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,8 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         mBannerView = (Banner) findViewById(R.id.banner_view);
-        mBannerView.setIndicatorGravity(Gravity.RIGHT);
+        mBannerView.setIndicatorGravity(BannerConfig.RIGHT);
         mBannerView.setIndicatorStyle(BannerStyle.INDICATOR_NUMBER);
+        //图片设置一定放在最后调用
         mBannerView.setNetImages(images);
 
         mBannerView2 = (Banner) findViewById(R.id.banner_view2);
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         mBannerView3 = (Banner) findViewById(R.id.banner_view3);
-        mBannerView3.setIndicatorStyle(BannerStyle.TITLE_WITHOUT_INDICATOR);
+        mBannerView3.setIndicatorStyle(BannerStyle.TITLE_WITH_NUMBER);
         mBannerView3.setAutoEnable(true);
         mBannerView3.setNetImageWithTitle(images,titles);
     }

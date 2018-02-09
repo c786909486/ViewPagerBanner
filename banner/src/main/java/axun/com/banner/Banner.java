@@ -36,22 +36,25 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private LinearLayout pointLayout;//圆点指示器布局
     private TextView numberLayout;//数字指示器布局
     private TextView titleLayout;//标题;
+    private LinearLayout titleBar;//带指示器的标题栏
+
     private BannerViewPager pager;
     private BannerAdapter mAdapter;
     private Context context;
     private List<View> imageViews;
     private List<String> images;
     private List<String> titles;
+
     private boolean needIndicator = true; //是否需要指示器
-    private int gravity = Gravity.CENTER;
-    private int currentInx = 0;
+    private int gravity = BannerConfig.CENTER;
     private int indicatorStyle = BannerStyle.INDICATOR_POINT;
-    private boolean isAuto = false;
-    private int currentItem =0;
     private int delayTime = 3000;
+    private boolean isAuto = false;
     private int pointDrawable = R.drawable.point_drawable; //圆点图片
     private int numberBg = R.drawable.number_bg; //数字指示器背景
     private int titleBg = R.color.default_bg;//标题背景
+
+    private int currentInx = 0;
 
     public Banner(@NonNull Context context) {
         this(context,null);
@@ -77,9 +80,9 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     /**
      * 设置指示器位置
-     * #Gravity.LEFT
-     * #Gravity.RIGHT
-     * #Gravity.CENTER
+     * #BannerConfig.LEFT
+     * #BannerConfig.RIGHT
+     * #BannerConfig.CENTER
      * @param gravity
      */
     public void setIndicatorGravity(int gravity){
@@ -110,6 +113,10 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         this.numberBg = numberBg;
     }
 
+    /**
+     * 设置自动轮播
+     * @param isAuto
+     */
     public void setAutoEnable(boolean isAuto){
         this.isAuto = isAuto;
     }
@@ -138,10 +145,19 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     }
 
+    /**
+     * 设置标题栏背景
+     * @param titleBg
+     */
     public void setTitleBg(int titleBg) {
         this.titleBg = titleBg;
     }
 
+    /**
+     * 加载网络图片和标题
+     * @param images
+     * @param titles
+     */
     public void setNetImageWithTitle(List<String> images, List<String> titles){
         this.images = images;
         this.titles = titles;
@@ -202,12 +218,12 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         }
     }
 
-    public void startAutoPlay() {
+    private void startAutoPlay() {
         handler.removeCallbacks(task);
         handler.postDelayed(task, delayTime);
     }
 
-    public void stopAutoPlay() {
+    private void stopAutoPlay() {
         handler.removeCallbacks(task);
     }
 
@@ -229,7 +245,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-//        Log.i(tag, ev.getAction() + "--" + isAutoPlay);
         if (isAuto) {
             int action = ev.getAction();
             if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL
@@ -256,7 +271,13 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 layoutParams.setMargins(16,0,16,25);
                 pointLayout.setLayoutParams(layoutParams);
-                pointLayout.setGravity(gravity);
+                if (gravity == BannerConfig.CENTER){
+                    pointLayout.setGravity(Gravity.CENTER);
+                }else if (gravity == BannerConfig.LEFT){
+                    pointLayout.setGravity(Gravity.LEFT);
+                }else if (gravity == BannerConfig.RIGHT){
+                    pointLayout.setGravity(Gravity.RIGHT);
+                }
                 this.addView(pointLayout);
                 if (images.size()>1){
                     for (int i = 0; i<images.size();i++){
@@ -275,11 +296,11 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                 numberLayout = new TextView(context);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                if (gravity == Gravity.RIGHT){
+                if (gravity == BannerConfig.RIGHT){
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                }else if (gravity == Gravity.LEFT){
+                }else if (gravity == BannerConfig.LEFT){
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                }else {
+                }else if (gravity == BannerConfig.CENTER){
                     layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                 }
                 layoutParams.setMargins(16,0,16,25);
@@ -303,6 +324,73 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     this.addView(titleLayout);
                     titleLayout.setText(titles.get(0));
                 }
+            }else if (indicatorStyle == BannerStyle.TITLE_WITH_POINT){
+                if (titles!=null){
+                    titleBar = new LinearLayout(context);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    titleBar.setOrientation(LinearLayout.HORIZONTAL);
+                    titleBar.setBackgroundResource(titleBg);
+                    titleBar.setLayoutParams(layoutParams);
+                    titleBar.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT);
+                    titleBar.setPadding(16,10,16,10);
+                    this.addView(titleBar);
+                    //添加标题
+                    titleLayout = new TextView(context);
+                    LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1.0f);
+                    titleLayout.setTextSize(13);
+                    titleLayout.setTextColor(Color.WHITE);
+                    titleLayout.setText(titles.get(0));
+                    titleLayout.setLayoutParams(titleParams);
+                    titleBar.addView(titleLayout);
+                    //添加point
+                    pointLayout = new LinearLayout(context);
+                    LinearLayout.LayoutParams pointParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    pointParams.setMargins(16,0,16,0);
+                    pointLayout.setLayoutParams(pointParams);
+                    titleBar.addView(pointLayout);
+                    if (images.size()>1){
+                        for (int i = 0; i<images.size();i++){
+                            View view = new View(context);
+                            LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(20,20);
+                            itemParams.setMargins(10,0,10,0);
+                            view.setLayoutParams(itemParams);
+                            view.setBackgroundResource(pointDrawable);
+                            pointLayout.addView(view);
+                        }
+                        pointLayout.getChildAt(0).setSelected(true);
+                    }
+                    pager.setCurrentItem(0);
+
+                }
+            }else if (indicatorStyle == BannerStyle.TITLE_WITH_NUMBER){
+                if (titles!=null){
+                    titleBar = new LinearLayout(context);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    titleBar.setOrientation(LinearLayout.HORIZONTAL);
+                    titleBar.setBackgroundResource(titleBg);
+                    titleBar.setLayoutParams(layoutParams);
+                    titleBar.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT);
+                    titleBar.setPadding(16,10,16,10);
+                    this.addView(titleBar);
+                    //添加标题
+                    titleLayout = new TextView(context);
+                    LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1.0f);
+                    titleLayout.setTextSize(13);
+                    titleLayout.setTextColor(Color.WHITE);
+                    titleLayout.setText(titles.get(0));
+                    titleLayout.setLayoutParams(titleParams);
+                    titleBar.addView(titleLayout);
+                    //添加数字指示器
+                    numberLayout = new TextView(context);
+                    LinearLayout.LayoutParams numberParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    numberLayout.setTextColor(Color.WHITE);
+                    numberLayout.setTextSize(13);
+                    numberLayout.setLayoutParams(numberParams);
+                    numberLayout.setText("1/"+images.size());
+                    titleBar.addView(numberLayout);
+                }
             }
         }
     }
@@ -316,7 +404,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     @Override
     public void onPageSelected(int position) {
-        currentItem = position;
         if (indicatorStyle == BannerStyle.INDICATOR_POINT){
             if (pointLayout != null){
                 pointLayout.getChildAt(currentInx).setSelected(false);
@@ -330,6 +417,23 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         }else if (indicatorStyle == BannerStyle.TITLE_WITHOUT_INDICATOR){
             if (titleLayout!=null){
                 titleLayout.setText(titles.get(position));
+            }
+        }else if (indicatorStyle == BannerStyle.TITLE_WITH_POINT){
+            if (titleLayout!=null){
+                titleLayout.setText(titles.get(position));
+            }
+
+            if (pointLayout!=null){
+                pointLayout.getChildAt(currentInx).setSelected(false);
+                pointLayout.getChildAt(position).setSelected(true);
+                currentInx = position;
+            }
+        }else if (indicatorStyle == BannerStyle.TITLE_WITH_NUMBER){
+            if (titleLayout!=null){
+                titleLayout.setText(titles.get(position));
+            }
+            if (numberLayout !=null){
+                numberLayout.setText((position+1)+"/"+images.size());
             }
         }
 
