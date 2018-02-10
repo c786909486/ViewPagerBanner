@@ -1,6 +1,7 @@
 package axun.com.banner;
 
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,7 +22,7 @@ public class BannerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return imageViews.size();
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -36,17 +37,14 @@ public class BannerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        container.addView(imageViews.get(position));
-        View view = imageViews.get(position);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener!=null){
-                    listener.onClick(v,position);
-                }
-            }
-        });
-        return view;
+        if (imageViews.get(position % imageViews.size()).getParent() != null) {
+            ((ViewPager) imageViews.get(position % imageViews.size())
+                    .getParent()).removeView(imageViews.get(position
+                    % imageViews.size()));
+        }
+        ((ViewPager) container).addView(
+                imageViews.get(position % imageViews.size()), 0);
+        return imageViews.get(position % imageViews.size());
     }
 
     private OnBannerClickListener listener;

@@ -53,6 +53,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private int pointDrawable = R.drawable.point_drawable; //圆点图片
     private int numberBg = R.drawable.number_bg; //数字指示器背景
     private int titleBg = R.color.default_bg;//标题背景
+    private int scrollDuration = 2000;
 
     private int currentInx = 0;
 
@@ -68,6 +69,19 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         super(context, attrs, defStyleAttr);
         this.context = context;
         initViewPager();
+    }
+
+    public void setScrollDuration(int scrollDuration){
+        this.scrollDuration = scrollDuration;
+        if (pager!=null){
+//            ViewPagerScroller scroller = new ViewPagerScroller(context);
+//            scroller.setScrollDuration(0);
+//            scroller.initViewPagerScroll(viewPager);  //这个是设置切换过渡时间为0毫秒
+
+            ViewPagerScroller scroller = new ViewPagerScroller(context);
+            scroller.setScrollDuration(scrollDuration);
+            scroller.initViewPagerScroll(pager);//这个是设置切换过渡时间为2秒
+        }
     }
 
     /**
@@ -137,7 +151,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
             @Override
             public void onClick(View view, int position) {
                 if (listener!=null){
-                    listener.onItemClick(view,position);
+                    listener.onItemClick(view,position%images.size());
                 }
             }
         });
@@ -233,11 +247,11 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
             if (images.size() > 1 && isAuto) {
                 int current = pager.getCurrentItem();
                 Log.d("Banner","当前item:"+current);
-                if (current<images.size()-1){
+//                if (current<images.size()-1){
                     pager.setCurrentItem(current+1);
-                }else {
-                    pager.setCurrentItem(0);
-                }
+//                }else {
+//                    pager.setCurrentItem(0);
+//                }
                 handler.postDelayed(task,delayTime);
             }
         }
@@ -407,33 +421,33 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         if (indicatorStyle == BannerStyle.INDICATOR_POINT){
             if (pointLayout != null){
                 pointLayout.getChildAt(currentInx).setSelected(false);
-                pointLayout.getChildAt(position).setSelected(true);
-                currentInx = position;
+                pointLayout.getChildAt(position%images.size()).setSelected(true);
+                currentInx = position%images.size();
             }
         }else if (indicatorStyle == BannerStyle.INDICATOR_NUMBER){
             if (numberLayout !=null){
-                numberLayout.setText((position+1)+"/"+images.size());
+                numberLayout.setText(((position%images.size())+1)+"/"+images.size());
             }
         }else if (indicatorStyle == BannerStyle.TITLE_WITHOUT_INDICATOR){
             if (titleLayout!=null){
-                titleLayout.setText(titles.get(position));
+                titleLayout.setText(titles.get(position%titles.size()));
             }
         }else if (indicatorStyle == BannerStyle.TITLE_WITH_POINT){
             if (titleLayout!=null){
-                titleLayout.setText(titles.get(position));
+                titleLayout.setText(titles.get(position%titles.size()));
             }
 
             if (pointLayout!=null){
                 pointLayout.getChildAt(currentInx).setSelected(false);
-                pointLayout.getChildAt(position).setSelected(true);
-                currentInx = position;
+                pointLayout.getChildAt(position%images.size()).setSelected(true);
+                currentInx = position%images.size();
             }
         }else if (indicatorStyle == BannerStyle.TITLE_WITH_NUMBER){
             if (titleLayout!=null){
-                titleLayout.setText(titles.get(position));
+                titleLayout.setText(titles.get(position%titles.size()));
             }
             if (numberLayout !=null){
-                numberLayout.setText((position+1)+"/"+images.size());
+                numberLayout.setText(((position%images.size())+1)+"/"+images.size());
             }
         }
 
