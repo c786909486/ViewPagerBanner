@@ -142,7 +142,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
      * 初始化viewpager
      */
     private void initViewPager(){
-        pager = new BannerViewPager(context);
+        pager = new ViewPager(context);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         pager.setLayoutParams(layoutParams);
         pager.setOverScrollMode(OVER_SCROLL_NEVER);
