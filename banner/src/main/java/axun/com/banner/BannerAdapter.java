@@ -42,9 +42,15 @@ public class BannerAdapter extends PagerAdapter {
                     .getParent()).removeView(imageViews.get(position
                     % imageViews.size()));
         }
-        ((ViewPager) container).addView(
-                imageViews.get(position % imageViews.size()), 0);
-        return imageViews.get(position % imageViews.size());
+        View view = imageViews.get(position % imageViews.size());
+        ((ViewPager) container).addView(view, 0);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(v,position);
+            }
+        });
+        return view;
     }
 
     private OnBannerClickListener listener;

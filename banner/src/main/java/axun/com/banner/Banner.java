@@ -38,7 +38,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private TextView titleLayout;//标题;
     private LinearLayout titleBar;//带指示器的标题栏
 
-    private BannerViewPager pager;
+    private ViewPager pager;
     private BannerAdapter mAdapter;
     private Context context;
     private List<View> imageViews;
@@ -74,9 +74,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     public void setScrollDuration(int scrollDuration){
         this.scrollDuration = scrollDuration;
         if (pager!=null){
-//            ViewPagerScroller scroller = new ViewPagerScroller(context);
-//            scroller.setScrollDuration(0);
-//            scroller.initViewPagerScroll(viewPager);  //这个是设置切换过渡时间为0毫秒
 
             ViewPagerScroller scroller = new ViewPagerScroller(context);
             scroller.setScrollDuration(scrollDuration);

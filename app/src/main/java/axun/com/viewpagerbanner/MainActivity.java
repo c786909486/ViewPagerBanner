@@ -2,6 +2,8 @@ package axun.com.viewpagerbanner;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
         mBannerView.setAutoEnable(true);
         //图片设置一定放在最后调用
         mBannerView.setNetImages(images);
+        mBannerView.setOnItemClickListener(new Banner.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(MainActivity.this,"点击了第"+(position+1)+"个",Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mBannerView2 = (Banner) findViewById(R.id.banner_view2);
         mBannerView2.setAutoEnable(true);
