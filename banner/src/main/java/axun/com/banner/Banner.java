@@ -135,6 +135,12 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         this.isAuto = isAuto;
     }
 
+    public void setTransformer(ViewPager.PageTransformer transformer){
+        if (pager!=null){
+            pager.setPageTransformer(false,transformer);
+        }
+    }
+
     /**
      * 初始化viewpager
      */
@@ -156,7 +162,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
             }
         });
         pager.addOnPageChangeListener(this);
-
     }
 
     /**
@@ -232,12 +237,12 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         }
     }
 
-    private void startAutoPlay() {
+    public void startAutoPlay() {
         handler.removeCallbacks(task);
         handler.postDelayed(task, delayTime);
     }
 
-    private void stopAutoPlay() {
+    public void stopAutoPlay() {
         handler.removeCallbacks(task);
     }
 
@@ -467,5 +472,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
+
 
 }
