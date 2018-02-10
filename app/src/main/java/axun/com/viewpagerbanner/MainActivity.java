@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mBannerView.setIndicatorGravity(BannerConfig.RIGHT);
         mBannerView.setIndicatorStyle(BannerStyle.INDICATOR_NUMBER);
         mBannerView.setScrollDuration(1000);
-        mBannerView.setAutoEnable(true);
+//        mBannerView.setAutoEnable(true);
         //图片设置一定放在最后调用
         mBannerView.setNetImages(images);
         mBannerView.setOnItemClickListener(new Banner.OnItemClickListener() {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mBannerView2 = (Banner) findViewById(R.id.banner_view2);
-        mBannerView2.setAutoEnable(true);
+//        mBannerView2.setAutoEnable(true);
         mBannerView2.setScrollDuration(1000);
         mBannerView2.setTransformer(new ZoomOutPageTransformer());
         mBannerView2.setNetImages(images);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         mBannerView3 = (Banner) findViewById(R.id.banner_view3);
         mBannerView3.setIndicatorStyle(BannerStyle.TITLE_WITH_NUMBER);
-        mBannerView3.setAutoEnable(true);
+//        mBannerView3.setAutoEnable(true);
         mBannerView3.setScrollDuration(1000);
         mBannerView3.setTransformer(new DepthPageTransformer());
         mBannerView3.setNetImageWithTitle(images,titles);

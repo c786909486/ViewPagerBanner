@@ -159,6 +159,8 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
             }
         });
         pager.addOnPageChangeListener(this);
+        pager.setCurrentItem(Integer.MAX_VALUE/2);
+        pager.setOffscreenPageLimit(0);
     }
 
     /**
@@ -248,12 +250,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         public void run() {
             if (images.size() > 1 && isAuto) {
                 int current = pager.getCurrentItem();
-                Log.d("Banner","当前item:"+current);
-//                if (current<images.size()-1){
-                    pager.setCurrentItem(current+1);
-//                }else {
-//                    pager.setCurrentItem(0);
-//                }
+                pager.setCurrentItem(current+1);
                 handler.postDelayed(task,delayTime);
             }
         }
@@ -420,6 +417,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     @Override
     public void onPageSelected(int position) {
+
         if (indicatorStyle == BannerStyle.INDICATOR_POINT){
             if (pointLayout != null){
                 pointLayout.getChildAt(currentInx).setSelected(false);
