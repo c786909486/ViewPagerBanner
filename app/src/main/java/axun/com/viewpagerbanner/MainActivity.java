@@ -22,6 +22,12 @@ public class MainActivity extends AppCompatActivity {
             "http://img15.3lian.com/2015/h1/280/d/11.jpg",
             "http://images.ali213.net/picfile/pic/2014/12/10/927_2014121034411595.jpg"
     };
+
+    private int[] localImages = new int[]{
+            R.mipmap.animal_1,
+            R.mipmap.animal_2,
+            R.mipmap.animal_3
+    };
     private List<String> titles = new ArrayList<>();
     private Banner mBannerView2;
     private Banner mBannerView3;
@@ -41,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
         mBannerView.setIndicatorGravity(BannerConfig.RIGHT);
         mBannerView.setIndicatorStyle(BannerStyle.INDICATOR_NUMBER);
         mBannerView.setScrollDuration(1000);
-//        mBannerView.setAutoEnable(true);
+        mBannerView.setAutoEnable(true);
         //图片设置一定放在最后调用
-        mBannerView.setNetImages(images);
+        mBannerView.setImages(images);
         mBannerView.setOnItemClickListener(new Banner.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -52,18 +58,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mBannerView2 = (Banner) findViewById(R.id.banner_view2);
-//        mBannerView2.setAutoEnable(true);
+        mBannerView2.setAutoEnable(true);
         mBannerView2.setScrollDuration(1000);
         mBannerView2.setTransformer(new ZoomOutPageTransformer());
-        mBannerView2.setNetImages(images);
+        mBannerView2.setImages(localImages);
 
 
         mBannerView3 = (Banner) findViewById(R.id.banner_view3);
         mBannerView3.setIndicatorStyle(BannerStyle.TITLE_WITH_NUMBER);
-//        mBannerView3.setAutoEnable(true);
+        mBannerView3.setAutoEnable(true);
         mBannerView3.setScrollDuration(1000);
         mBannerView3.setTransformer(new DepthPageTransformer());
-        mBannerView3.setNetImageWithTitle(images,titles);
+        mBannerView3.setImageWithTitle(images,titles);
     }
 
     @Override

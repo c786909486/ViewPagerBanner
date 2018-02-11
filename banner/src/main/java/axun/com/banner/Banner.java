@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,8 +43,10 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private BannerAdapter mAdapter;
     private Context context;
     private List<View> imageViews;
-    private List<String> images;
+    private List<?> images;
     private List<String> titles;
+    private int[] localImages;
+    private int dataLength;
 
     private boolean needIndicator = true; //是否需要指示器
     private int gravity = BannerConfig.CENTER;
@@ -54,6 +57,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private int numberBg = R.drawable.number_bg; //数字指示器背景
     private int titleBg = R.color.default_bg;//标题背景
     private int scrollDuration = 2000;
+
 
     private int currentInx = 0;
 
@@ -172,59 +176,78 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     }
 
     /**
-     * 加载网络图片和标题
+     * 加载图片和标题
      * @param images
      * @param titles
      */
-    public void setNetImageWithTitle(List<String> images, List<String> titles){
+    public void setImageWithTitle(List<String> images, List<String> titles){
         this.images = images;
         this.titles = titles;
-        addNetImage();
+        addImage();
     }
 
-    public void setNetImageWithTitle(String[] images,List<String> titles){
+    public void setImageWithTitle(String[] images, List<String> titles){
         this.titles = titles;
-        setNetImages(images);
+        setImages(images);
     }
 
     /**
-     * 设置网络图片
+     * 设置图片
      * @param images
      */
-    public void setNetImages(List<String> images){
+    public void setImages(List<?> images){
         this.images = images;
-        addNetImage();
+        addImage();
     }
 
     /**
-     * 设置网络图片
+     * 设置图片
      * @param images
      */
-    public void setNetImages(String[] images){
+    public void setImages(String[] images){
         this.images = new ArrayList<>();
-        Collections.addAll(this.images, images);
-        addNetImage();
+        Collections.addAll((Collection<? super String>) this.images, images);
+        addImage();
+    }
+
+    public void setImages(int[] images){
+        this.localImages = images;
+        addImage();
     }
 
     /**
      * 添加imageView到viewPager中
      */
-    private void addNetImage(){
-        if (images == null){
+    private void addImage(){
+        if (images == null && localImages == null){
             return;
         }
-        for (String image:images){
-            ImageView imageView = new ImageView(context);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-            imageView.setLayoutParams(layoutParams);
-            Glide.with(context).load(image).diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(imageView);
-            imageViews.add(imageView);
-        }
-        Log.d("Banner","添加数据"+imageViews.size());
+       if (images!=null){
+           for (Object image:images){
+               ImageView imageView = new ImageView(context);
+               imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+               ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+               imageView.setLayoutParams(layoutParams);
+               Glide.with(context).load(image).diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                       .into(imageView);
+               imageViews.add(imageView);
+           }
+           Log.d("Banner","添加数据"+imageViews.size());
+       }else {
+           for (int image:localImages){
+               ImageView imageView = new ImageView(context);
+               imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+               ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+               imageView.setLayoutParams(layoutParams);
+               Glide.with(context).load(image).diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                       .into(imageView);
+               imageViews.add(imageView);
+           }
+           Log.d("Banner","添加数据"+imageViews.size());
+       }
         mAdapter.notifyDataSetChanged();
-        setIndicator(images);
+        dataLength = images == null?localImages.length:images.size();
+        setIndicator(dataLength);
         setAutoPlay();
     }
 
@@ -248,7 +271,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private final Runnable task = new Runnable() {
         @Override
         public void run() {
-            if (images.size() > 1 && isAuto) {
+            if (dataLength > 1 && isAuto) {
                 int current = pager.getCurrentItem();
                 pager.setCurrentItem(current+1);
                 handler.postDelayed(task,delayTime);
@@ -273,10 +296,10 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     /**
      * 添加指示器
-     * @param images
+     * @param length
      */
     @SuppressLint("SetTextI18n")
-    private void setIndicator(List<?> images){
+    private void setIndicator(int length){
         if (needIndicator){
             if (indicatorStyle == BannerStyle.INDICATOR_POINT){
                 pointLayout = new LinearLayout(context);
@@ -292,8 +315,8 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     pointLayout.setGravity(Gravity.RIGHT);
                 }
                 this.addView(pointLayout);
-                if (images.size()>1){
-                    for (int i = 0; i<images.size();i++){
+                if (length>1){
+                    for (int i = 0; i<length;i++){
                         View view = new View(context);
                         LinearLayout.LayoutParams pointParams = new LinearLayout.LayoutParams(20,20);
                         view.setLayoutParams(pointParams);
@@ -323,7 +346,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                 numberLayout.setTextColor(Color.WHITE);
                 numberLayout.setTextSize(13);
                 this.addView(numberLayout);
-                numberLayout.setText("1/"+images.size());
+                numberLayout.setText("1/"+length);
             }else if (indicatorStyle == BannerStyle.TITLE_WITHOUT_INDICATOR){
                 if (titles!=null){
                     titleLayout = new TextView(context);
@@ -362,8 +385,8 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     pointParams.setMargins(16,0,16,0);
                     pointLayout.setLayoutParams(pointParams);
                     titleBar.addView(pointLayout);
-                    if (images.size()>1){
-                        for (int i = 0; i<images.size();i++){
+                    if (length>1){
+                        for (int i = 0; i<length;i++){
                             View view = new View(context);
                             LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(20,20);
                             itemParams.setMargins(10,0,10,0);
@@ -401,7 +424,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     numberLayout.setTextColor(Color.WHITE);
                     numberLayout.setTextSize(13);
                     numberLayout.setLayoutParams(numberParams);
-                    numberLayout.setText("1/"+images.size());
+                    numberLayout.setText("1/"+length);
                     titleBar.addView(numberLayout);
                 }
             }
@@ -421,12 +444,12 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         if (indicatorStyle == BannerStyle.INDICATOR_POINT){
             if (pointLayout != null){
                 pointLayout.getChildAt(currentInx).setSelected(false);
-                pointLayout.getChildAt(position%images.size()).setSelected(true);
-                currentInx = position%images.size();
+                pointLayout.getChildAt(position%dataLength).setSelected(true);
+                currentInx = position%dataLength;
             }
         }else if (indicatorStyle == BannerStyle.INDICATOR_NUMBER){
             if (numberLayout !=null){
-                numberLayout.setText(((position%images.size())+1)+"/"+images.size());
+                numberLayout.setText(((position%dataLength)+1)+"/"+dataLength);
             }
         }else if (indicatorStyle == BannerStyle.TITLE_WITHOUT_INDICATOR){
             if (titleLayout!=null){
@@ -439,15 +462,15 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
             if (pointLayout!=null){
                 pointLayout.getChildAt(currentInx).setSelected(false);
-                pointLayout.getChildAt(position%images.size()).setSelected(true);
-                currentInx = position%images.size();
+                pointLayout.getChildAt(position%dataLength).setSelected(true);
+                currentInx = position%dataLength;
             }
         }else if (indicatorStyle == BannerStyle.TITLE_WITH_NUMBER){
             if (titleLayout!=null){
                 titleLayout.setText(titles.get(position%titles.size()));
             }
             if (numberLayout !=null){
-                numberLayout.setText(((position%images.size())+1)+"/"+images.size());
+                numberLayout.setText(((position%images.size())+1)+"/"+dataLength);
             }
         }
 
