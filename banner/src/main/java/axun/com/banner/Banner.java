@@ -42,21 +42,20 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private ViewPager pager;
     private BannerAdapter mAdapter;
     private Context context;
-    private List<View> imageViews;
-    private List<?> images;
-    private List<String> titles;
-    private int[] localImages;
-    private int dataLength;
+    private List<View> imageViews;//imageview集合
+    private List<?> images;//图片地址集合
+    private List<String> titles;//标题集合
+    private int[] localImages;//本地图片数组
+    private int dataLength;//图片数据长度
 
     private boolean needIndicator = true; //是否需要指示器
-    private int gravity = BannerConfig.CENTER;
-    private int indicatorStyle = BannerStyle.INDICATOR_POINT;
-    private int delayTime = 3000;
-    private boolean isAuto = false;
+    private int gravity = BannerConfig.CENTER;//指示器位置，只对无标题指示器生效
+    private int indicatorStyle = BannerStyle.INDICATOR_POINT;//指示器类型
+    private int delayTime = 3000;//自动轮播时间
+    private boolean isAuto = false;//是否自动轮播
     private int pointDrawable = R.drawable.point_drawable; //圆点图片
     private int numberBg = R.drawable.number_bg; //数字指示器背景
     private int titleBg = R.color.default_bg;//标题背景
-    private int scrollDuration = 2000;
 
 
     private int currentInx = 0;
@@ -76,7 +75,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     }
 
     public void setScrollDuration(int scrollDuration){
-        this.scrollDuration = scrollDuration;
         if (pager!=null){
 
             ViewPagerScroller scroller = new ViewPagerScroller(context);
@@ -253,21 +251,33 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     private Handler handler = new Handler();
 
+    /**
+     * 设置自动轮播
+     */
     private void setAutoPlay() {
         if (isAuto){
             startAutoPlay();
         }
     }
 
+    /**
+     * 开启自动轮播
+     */
     public void startAutoPlay() {
         handler.removeCallbacks(task);
         handler.postDelayed(task, delayTime);
     }
 
+    /**
+     * 关闭自动轮播
+     */
     public void stopAutoPlay() {
         handler.removeCallbacks(task);
     }
 
+    /**
+     * 轮播任务
+     */
     private final Runnable task = new Runnable() {
         @Override
         public void run() {
@@ -279,6 +289,11 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
         }
     };
 
+    /**
+     * 手指滑动时间，手指接触时停止轮播，手指离开时开启轮播
+     * @param ev
+     * @return
+     */
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (isAuto) {
@@ -326,7 +341,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     }
                     pointLayout.getChildAt(0).setSelected(true);
                 }
-                pager.setCurrentItem(0);
 
             }else if (indicatorStyle == BannerStyle.INDICATOR_NUMBER){
                 numberLayout = new TextView(context);
@@ -396,8 +410,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                         }
                         pointLayout.getChildAt(0).setSelected(true);
                     }
-                    pager.setCurrentItem(0);
-
                 }
             }else if (indicatorStyle == BannerStyle.TITLE_WITH_NUMBER){
                 if (titles!=null){
@@ -438,6 +450,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
 
     }
 
+
     @Override
     public void onPageSelected(int position) {
 
@@ -459,7 +472,6 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
             if (titleLayout!=null){
                 titleLayout.setText(titles.get(position%titles.size()));
             }
-
             if (pointLayout!=null){
                 pointLayout.getChildAt(currentInx).setSelected(false);
                 pointLayout.getChildAt(position%dataLength).setSelected(true);
