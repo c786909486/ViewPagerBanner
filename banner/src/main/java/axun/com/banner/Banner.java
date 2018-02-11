@@ -364,7 +364,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
             }else if (indicatorStyle == BannerStyle.TITLE_WITHOUT_INDICATOR){
                 if (titles!=null){
                     titleLayout = new TextView(context);
-                    titleLayout.setPadding(16,8,16,8);
+                    titleLayout.setPadding(16,10,16,10);
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                     titleLayout.setLayoutParams(layoutParams);
