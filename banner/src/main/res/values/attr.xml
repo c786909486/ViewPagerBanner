@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Banner">
+        <attr name="auto_play" format="boolean"/>
+        <attr name="text_size" format="dimension"/>
+        <attr name="title_bg" format="color|reference"/>
+        <attr name="indicator" format="reference"/>
+        <attr name="indicator_style" format="integer">
+            <enum name="INDICATOR_POINT" value="0"/>
+            <enum name="INDICATOR_NUMBER" value="1"/>
+            <enum name="TITLE_WITHOUT_INDICATOR" value="2"/>
+            <enum name="TITLE_WITH_POINT" value="3"/>
+            <enum name="TITLE_WITH_NUMBER" value="4"/>
+        </attr>
+        <attr name="need_indicator" format="boolean"/>
+        <attr name="indicator_gravity" format="integer">
+            <enum name="RIGHT" value="1"/>
+            <enum name="LEFT" value="2"/>
+            <enum name="CENTER" value="3"/>
+        </attr>
+    </declare-styleable>
+</resources>

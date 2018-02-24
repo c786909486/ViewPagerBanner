@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import axun.com.banner.Banner;
-import axun.com.banner.BannerConfig;
 import axun.com.banner.BannerStyle;
 import axun.com.banner.transform.DepthPageTransformer;
 import axun.com.banner.transform.ZoomOutPageTransformer;
@@ -44,11 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         mBannerView = (Banner) findViewById(R.id.banner_view);
-        mBannerView.setIndicatorGravity(BannerConfig.RIGHT);
-        mBannerView.setIndicatorStyle(BannerStyle.INDICATOR_NUMBER);
         mBannerView.setScrollDuration(1000);
-        mBannerView.setAutoEnable(true);
-        //图片设置一定放在最后调用
         mBannerView.setImages(images);
         mBannerView.setOnItemClickListener(new Banner.OnItemClickListener() {
             @Override

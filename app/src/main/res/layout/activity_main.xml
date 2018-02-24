@@ -13,11 +13,15 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:orientation="vertical">
+
          <axun.com.banner.Banner
              android:id="@+id/banner_view"
              android:layout_width="match_parent"
              android:layout_height="200dp"
-             ></axun.com.banner.Banner>
+             app:auto_play="true"
+             app:indicator_gravity="RIGHT"
+             app:indicator_style="INDICATOR_NUMBER"></axun.com.banner.Banner>
+
          <axun.com.banner.Banner
              android:layout_marginTop="5dp"
              android:id="@+id/banner_view2"

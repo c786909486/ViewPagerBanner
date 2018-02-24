@@ -2,6 +2,7 @@ package axun.com.banner;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.AttrRes;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 
 public class Banner extends RelativeLayout implements ViewPager.OnPageChangeListener{
+    private static final int DEFAULT_TEXT_SIZE = 13;
 
     private LinearLayout pointLayout;//圆点指示器布局
     private TextView numberLayout;//数字指示器布局
@@ -56,8 +58,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     private int pointDrawable = R.drawable.point_drawable; //圆点图片
     private int numberBg = R.drawable.number_bg; //数字指示器背景
     private int titleBg = R.color.default_bg;//标题背景
-
-
+    private int textSize ;//标题字体大小
     private int currentInx = 0;
 
     public Banner(@NonNull Context context) {
@@ -71,15 +72,23 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
     public Banner(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
+        TypedArray array = context.obtainStyledAttributes(attrs,R.styleable.Banner,defStyleAttr,0);
+        isAuto = array.getBoolean(R.styleable.Banner_auto_play,true);
+        textSize = array.getDimensionPixelSize(R.styleable.Banner_text_size,DEFAULT_TEXT_SIZE);
+        needIndicator = array.getBoolean(R.styleable.Banner_need_indicator,true);
+        pointDrawable = array.getResourceId(R.styleable.Banner_indicator,R.drawable.point_drawable);
+        titleBg = array.getResourceId(R.styleable.Banner_title_bg,R.color.default_bg);
+        indicatorStyle = array.getInteger(R.styleable.Banner_indicator_style,BannerStyle.INDICATOR_POINT);
+        gravity = array.getInteger(R.styleable.Banner_indicator_gravity,BannerConfig.CENTER);
+        array.recycle();
         initViewPager();
     }
 
     public void setScrollDuration(int scrollDuration){
         if (pager!=null){
-
             ViewPagerScroller scroller = new ViewPagerScroller(context);
             scroller.setScrollDuration(scrollDuration);
-            scroller.initViewPagerScroll(pager);//这个是设置切换过渡时间为2秒
+            scroller.initViewPagerScroll(pager);
         }
     }
 
@@ -358,7 +367,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                 numberLayout.setPadding(15,15,15,15);
                 numberLayout.setBackgroundResource(numberBg);
                 numberLayout.setTextColor(Color.WHITE);
-                numberLayout.setTextSize(13);
+                numberLayout.setTextSize(textSize);
                 this.addView(numberLayout);
                 numberLayout.setText("1/"+length);
             }else if (indicatorStyle == BannerStyle.TITLE_WITHOUT_INDICATOR){
@@ -369,7 +378,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                     titleLayout.setLayoutParams(layoutParams);
                     titleLayout.setBackgroundResource(titleBg);
-                    titleLayout.setTextSize(13);
+                    titleLayout.setTextSize(textSize);
                     titleLayout.setTextColor(Color.WHITE);
                     this.addView(titleLayout);
                     titleLayout.setText(titles.get(0));
@@ -388,7 +397,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     //添加标题
                     titleLayout = new TextView(context);
                     LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1.0f);
-                    titleLayout.setTextSize(13);
+                    titleLayout.setTextSize(textSize);
                     titleLayout.setTextColor(Color.WHITE);
                     titleLayout.setText(titles.get(0));
                     titleLayout.setLayoutParams(titleParams);
@@ -425,7 +434,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     //添加标题
                     titleLayout = new TextView(context);
                     LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1.0f);
-                    titleLayout.setTextSize(13);
+                    titleLayout.setTextSize(textSize);
                     titleLayout.setTextColor(Color.WHITE);
                     titleLayout.setText(titles.get(0));
                     titleLayout.setLayoutParams(titleParams);
@@ -434,7 +443,7 @@ public class Banner extends RelativeLayout implements ViewPager.OnPageChangeList
                     numberLayout = new TextView(context);
                     LinearLayout.LayoutParams numberParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     numberLayout.setTextColor(Color.WHITE);
-                    numberLayout.setTextSize(13);
+                    numberLayout.setTextSize(textSize);
                     numberLayout.setLayoutParams(numberParams);
                     numberLayout.setText("1/"+length);
                     titleBar.addView(numberLayout);

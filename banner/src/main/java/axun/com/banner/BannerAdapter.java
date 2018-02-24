@@ -113,6 +113,12 @@ public class BannerAdapter extends PagerAdapter {
                 ViewGroup viewGroup = (ViewGroup) parent;
                 viewGroup.removeView(imageView);
             }
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(v,position);
+                }
+            });
             container.addView(imageView);
             return imageView;
         }

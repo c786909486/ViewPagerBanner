@@ -17,4 +17,5 @@ public class BannerStyle {
     public static final int TITLE_WITH_NUMBER = 4;
 
 
+
 }
